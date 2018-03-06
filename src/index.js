@@ -1,21 +1,39 @@
 module.exports = function count(s, pairs) {
     var n = evalN(pairs);
+    if (n == Infinity)
+        return 0;
     var count = 0;
+    if (s.length == 1) {
+        for (var i = 0; i <= n; i++) {
+            for (var j = 0; j < s.length; j++) {
+                var t = parseInt(s[j]);
+                var gcd = evalGCD(i + j, n);
+                if (gcd == 0)
+                    continue;
+                if ((t == 1 && gcd == 1) || (t == 0 && gcd != 1))
+                count++;
+            }
+        }
+        return count%1000000007;
+    }
 
     for (var i = 0; i <= n; i++) {
-        for (var j=0; j < s.length; j++) {
+        var f = 0;
+        for (var j = 0; j < s.length; j++) {
             var t = parseInt(s[j]);
             var gcd = evalGCD(i+j, n);
-            console.log(i+j +' : '+ gcd  +' : '+ t);
+            //console.log(i + ' : ' + j +' : '+ gcd  +' : '+ t   +' : '+ ((t == 1 && gcd == 1) || (t == 0 && gcd > 1)));
+            if (gcd == 0)
+                continue;
             if (t == 1 && gcd == 1)
-                count++;
-            else if (t = 0 && gcd!=0)
-                count++;
+                f++;
+            else if (t == 0 && gcd != 1)
+                f++
         }
+        if (f > 1)
+            count++;
     }
-    console.log(count);
-    console.log(count%1000000007);
-    return count;
+    return count%1000000007;
 }
 
 function evalN (arr) {
@@ -25,7 +43,7 @@ function evalN (arr) {
         var temp = Math.pow(arr[i][0], arr[i][1]);
         res *= temp;
     }
-    res = res/Math.pow(arr[len-1][0], arr[len-1][1]);
+    console.log(res);
     return res;
 }
 
@@ -38,4 +56,12 @@ function evalGCD(a, b) {
         b = t;
     }
     return a;
+}
+
+function stringMod(s) {
+    if ((s.indexOf('1') == -1) && (s.length>1))
+        return '0';
+    if ((s.indexOf('0') == -1) && (s.length>1))
+        return '1';
+    return s;
 }
