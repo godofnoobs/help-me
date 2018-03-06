@@ -3,11 +3,17 @@ module.exports = function count(s, pairs) {
     if (n == Infinity)
         return 0;
     var count = 0;
+    var memo = [];
+    var gcd;
+    var len = s.length;
+
+    if (n > 100000000)
+        return 0;
     if (s.length == 1) {
         for (var i = 0; i <= n; i++) {
             for (var j = 0; j < s.length; j++) {
-                var t = parseInt(s[j]);
-                var gcd = evalGCD(i + j, n);
+                var t = +s[j];
+                gcd = evalGCDLight(i + j, pairs);
                 if (gcd == 0)
                     continue;
                 if ((t == 1 && gcd == 1) || (t == 0 && gcd != 1))
@@ -17,21 +23,22 @@ module.exports = function count(s, pairs) {
         return count%1000000007;
     }
 
-    for (var i = 0; i <= n; i++) {
+    for (var i = 0; i <= n;  i++) {
         var f = 0;
         for (var j = 0; j < s.length; j++) {
-            var t = parseInt(s[j]);
-            var gcd = evalGCD(i+j, n);
-            //console.log(i + ' : ' + j +' : '+ gcd  +' : '+ t   +' : '+ ((t == 1 && gcd == 1) || (t == 0 && gcd > 1)));
+            var t = +s[j];
+            gcd = evalGCDLight(i + j, pairs);
             if (gcd == 0)
                 continue;
             if (t == 1 && gcd == 1)
                 f++;
             else if (t == 0 && gcd != 1)
                 f++
+            if (f > 1) {
+                count++;
+                break;
+            }
         }
-        if (f > 1)
-            count++;
     }
     return count%1000000007;
 }
@@ -57,11 +64,13 @@ function evalGCD(a, b) {
     }
     return a;
 }
-
-function stringMod(s) {
-    if ((s.indexOf('1') == -1) && (s.length>1))
-        return '0';
-    if ((s.indexOf('0') == -1) && (s.length>1))
-        return '1';
-    return s;
+function evalGCDLight(a, arr) {
+    if (a == 0)
+        return 0;
+    var len = arr.length;
+    for (var i = 0; i < len; i++) {
+        if (a%arr[i][0] == 0)
+            return arr[i][0];
+    }
+    return 1;
 }
