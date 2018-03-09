@@ -2,45 +2,15 @@ module.exports = function count(s, pairs) {
     var n = evalN(pairs);
     if (n == Infinity)
         return 0;
-    var count = 0;
-    var memo = [];
-    var gcd;
     var len = s.length;
 
     if (n > 100000000)
         return 0;
-    if (s.length == 1) {
-        for (var i = 0; i <= n; i++) {
-            for (var j = 0; j < s.length; j++) {
-                var t = +s[j];
-                gcd = evalGCDLight(i + j, pairs);
-                if (gcd == 0)
-                    continue;
-                if ((t == 1 && gcd == 1) || (t == 0 && gcd != 1))
-                count++;
-            }
-        }
-        return count%1000000007;
-    }
+    if (len == 1)
+        return evalCountOneSymbol(s, n, pairs);
 
-    for (var i = 0; i <= n;  i++) {
-        var f = 0;
-        for (var j = 0; j < s.length; j++) {
-            var t = +s[j];
-            gcd = evalGCDLight(i + j, pairs);
-            if (gcd == 0)
-                continue;
-            if (t == 1 && gcd == 1)
-                f++;
-            else if (t == 0 && gcd != 1)
-                f++
-            if (f > 1) {
-                count++;
-                break;
-            }
-        }
-    }
-    return count%1000000007;
+    else
+        return evalCountMore(s, n, pairs);
 }
 
 function evalN (arr) {
@@ -73,4 +43,43 @@ function evalGCDLight(a, arr) {
             return arr[i][0];
     }
     return 1;
+}
+
+function evalCountOneSymbol(s, n, pairs) {
+    var len = s.length;
+    var count = 0;
+    for (var i = 0; i <= n; i++) {
+        for (var j = 0; j < len; j++) {
+            var t = +s[j];
+            gcd = evalGCDLight(i + j, pairs);
+            if (gcd == 0)
+                continue;
+            if ((t == 1 && gcd == 1) || (t == 0 && gcd != 1))
+                count++;
+        }
+    }
+    return count % 1000000007;
+}
+
+function evalCountMore(s, n, pairs) {
+    var len = s.length;
+    var count = 0;
+    for (var i = 0; i <= n; i++) {
+        var f = 0;
+        for (var j = 0; j < len; j++) {
+            var t = +s[j];
+            gcd = evalGCDLight(i + j, pairs);
+            if (gcd == 0)
+                continue;
+            if (t == 1 && gcd == 1)
+                f++;
+            else if (t == 0 && gcd != 1)
+                f++
+            if (f > 1) {
+                count++;
+                break;
+            }
+        }
+    }
+    return count % 1000000007;
 }
